@@ -18,6 +18,7 @@ model Professor {
   number Int @unique
   courses Course[]
   departments Department[]
+  imageURL String
 }
 
 model Course {
