@@ -1,12 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Professor, Course, Department } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-
+import { CreateCourseDto } from './dto/CreateCourseDto';
+import { CreateDepartmentDto } from './dto/CreateDepartmentDto';
+import { CreateProfessorDto } from './dto/CreateProfessorDto';
+import { UpdateCourseDto } from './dto/UpdateCourseDto';
+import { UpdateDepartmentDto } from './dto/UpdateDepartmentDto';
+import { UpdateProfessorDto } from './dto/UpdateProfessorDto';
 @Injectable()
 export class Repository {
   constructor(private prisma: PrismaService) {}
 
-  async findPfByName(name: string): Promise<Professor[]> {
+  async findProfessorByName(name: string): Promise<Professor[]> {
     const professor = await this.prisma.professor.findMany({
       where: { name: name },
     });
@@ -16,7 +21,7 @@ export class Repository {
     return professor;
   }
 
-  async findPfById(id: number): Promise<Professor> {
+  async findProfessorById(id: number): Promise<Professor> {
     const professor = await this.prisma.professor.findUnique({
       where: { id: id },
     });
@@ -27,7 +32,7 @@ export class Repository {
   }
 
   async findByCourse(course: string): Promise<Professor[]> {
-    const inputCourse = await this.coursePfByName(course);
+    const inputCourse = await this.findCourseByName(course);
     if (!inputCourse) {
       throw new NotFoundException(`${course}는 존재하지 않는 과목입니다.`);
     }
@@ -40,7 +45,7 @@ export class Repository {
     return professor;
   }
 
-  async coursePfByName(name: string): Promise<Course> {
+  async findCourseByName(name: string): Promise<Course> {
     const course = await this.prisma.course.findUnique({
       where: { name: name },
     });
@@ -50,7 +55,7 @@ export class Repository {
     return course;
   }
 
-  async dmByName(name: string): Promise<Department> {
+  async DepartmentByName(name: string): Promise<Department> {
     const department = await this.prisma.department.findUnique({
       where: { name: name },
     });
@@ -60,9 +65,9 @@ export class Repository {
     return department;
   }
 
-  async findPfByDm(name: string): Promise<Professor[]> {
-    const inputDm = await this.dmByName(name);
-    if (!inputDm) {
+  async findProfessorByDepartment(name: string): Promise<Professor[]> {
+    const inputDepartment = await this.DepartmentByName(name);
+    if (!inputDepartment) {
       throw new NotFoundException(`${name}인 부서는 없습니다.`);
     }
     const Professor = await this.prisma.professor.findMany({
@@ -73,4 +78,18 @@ export class Repository {
     }
     return Professor;
   }
+
+  async createProfessor(create: CreateProfessorDto): Promise<Professor> {
+    return await this.prisma.professor.create({ data: create });
+  }
+
+  async createCourse(create: CreateCourseDto) {}
+
+  async createDepartment(create: CreateDepartmentDto) {}
+
+  async updateProfessor(update: UpdateProfessorDto) {}
+
+  async updateCourse(update: UpdateCourseDto) {}
+
+  async updateDepartment(update: UpdateDepartmentDto) {}
 }

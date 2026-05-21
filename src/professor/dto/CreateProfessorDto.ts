@@ -4,13 +4,14 @@ import {
   IsArray,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Max,
   Min,
   MinLength,
 } from 'class-validator';
 
-export class CreatePfDto {
+export class CreateProfessorDto {
   @ApiProperty({
     description: '교수님 이름',
     type: String,
@@ -50,7 +51,7 @@ export class CreatePfDto {
   email!: string;
 
   @ApiProperty({
-    description: '교수님의 수업들',
+    description: '교수님의 수업들의 id',
     type: Array,
     minItems: 1,
     nullable: false,
@@ -60,4 +61,25 @@ export class CreatePfDto {
   @IsNotEmpty()
   @ArrayMinSize(1)
   courses!: number[];
+
+  @ApiProperty({
+    description: '교수님의 이미지',
+    type: String,
+    nullable: true,
+    example: 'http://example.jpg',
+  })
+  @IsOptional()
+  @IsString()
+  imageURL?: string;
 }
+
+/*model Professor {
+  id Int @id @default(autoincrement())
+  name String
+  email String @unique
+  number Int @unique
+  courses Course[]
+  departments Department[]
+  imageURL String
+}
+ */

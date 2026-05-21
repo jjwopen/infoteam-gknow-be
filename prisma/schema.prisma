@@ -16,9 +16,9 @@ model Professor {
   name String
   email String @unique
   number Int @unique
-  courses Course[]
+  course Course[]
   departments Department[]
-  imageURL String
+  imageURL String @default("https://example.com/default-image.jpg")
 }
 
 model Course {

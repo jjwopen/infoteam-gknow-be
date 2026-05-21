@@ -10,7 +10,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class UpdatePfDto {
+export class UpdateProfessorDto {
   @ApiPropertyOptional({
     description: '교수님 이름',
     type: String,

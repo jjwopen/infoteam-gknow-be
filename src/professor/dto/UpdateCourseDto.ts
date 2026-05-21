@@ -7,7 +7,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class UpdateCsDto {
+export class UpdateCourseDto {
   @ApiPropertyOptional({
     description: '교과목의 이름',
     type: String,
