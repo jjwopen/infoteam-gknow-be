@@ -1,4 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Max,
+  Min,
+  MinLength,
+} from 'class-validator';
 
 export class CreatePfDto {
   @ApiProperty({
@@ -8,6 +18,9 @@ export class CreatePfDto {
     nullable: false,
     example: '강지훈',
   })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(2)
   name!: string;
 
   @ApiProperty({
@@ -18,6 +31,10 @@ export class CreatePfDto {
     nullable: false,
     example: 2000,
   })
+  @IsNumber()
+  @Min(2000)
+  @Max(9999)
+  @IsNotEmpty()
   number!: number;
 
   @ApiProperty({
@@ -27,6 +44,9 @@ export class CreatePfDto {
     nullable: false,
     example: 'jihoon@gist.ac.kr',
   })
+  @IsString()
+  @MinLength(1)
+  @IsNotEmpty()
   email!: string;
 
   @ApiProperty({
@@ -36,5 +56,8 @@ export class CreatePfDto {
     nullable: false,
     example: [0, 1, 2],
   })
+  @IsArray()
+  @IsNotEmpty()
+  @ArrayMinSize(1)
   courses!: number[];
 }
