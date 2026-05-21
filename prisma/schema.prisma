@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model EmailRaw {
+  id                String   @id @default(uuid())
+  externalMessageId String   @unique
+
+  subject           String?
+  senderName        String?
+  senderEmail       String?
+  receivedAt        DateTime?
+
+  bodyHtml          String?
+  bodyText          String?
+  bodyPreview       String?
+
+  renderedHtml      String?
+
+  hasAttachments    Boolean  @default(false)
+  createdAt         DateTime @default(now())
+
+  attachments       EmailAttachment[]
+
+  @@index([receivedAt])
+}
+
+model EmailAttachment {
+  id                   String   @id @default(uuid())
+  emailRawId           String
+
+  externalAttachmentId String?
+  fileName             String
+  contentType          String?
+  size                 Int?
+
+  storageUrl           String
+  storageKey           String?
+
+  isInline             Boolean  @default(false)
+  contentId            String?
+
+  createdAt            DateTime @default(now())
+
+  emailRaw             EmailRaw @relation(fields: [emailRawId], references: [id])
+
+  @@index([emailRawId])
+  @@index([contentId])
+}
+
+model MailSyncState {
+  id           String   @id @default(uuid())
+  deltaToken   String?
+  lastSyncedAt DateTime?
+  updatedAt    DateTime @updatedAt
+}
+
+model MailSyncLog {
+  id             String   @id @default(uuid())
+  syncStartedAt  DateTime @default(now())
+  syncFinishedAt DateTime?
+  status         String
+  fetchedCount   Int      @default(0)
+  errorMessage   String?
+}
