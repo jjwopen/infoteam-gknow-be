@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import {
   ArrayMinSize,
   IsArray,
@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 
 export class UpdateDepartmentDto {
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: '학과의 이름',
     type: String,
     minLength: 1,
@@ -20,7 +20,7 @@ export class UpdateDepartmentDto {
   @MinLength(1)
   name!: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: '학과 내 교수님 id',
     type: Array,
     minItems: 1,
@@ -31,14 +31,4 @@ export class UpdateDepartmentDto {
   @IsArray()
   @ArrayMinSize(1)
   professors!: number[];
-
-  @ApiProperty({
-    description: '교수님의 이미지',
-    type: String,
-    nullable: true,
-    example: 'http://example.jpg',
-  })
-  @IsOptional()
-  @IsString()
-  imageURL?: string;
 }

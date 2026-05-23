@@ -3,6 +3,7 @@ import {
   ArrayMinSize,
   IsArray,
   IsNotEmpty,
+  IsOptional,
   IsString,
   MinLength,
 } from 'class-validator';
@@ -23,12 +24,12 @@ export class CreateDepartmentDto {
   @ApiProperty({
     description: '학과 내 교수님 id',
     type: Array,
-    minItems: 1,
-    nullable: false,
+    minItems: 0,
+    nullable: true,
     example: [1, 2, 3],
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsArray()
-  @ArrayMinSize(1)
-  professors!: number[];
+  @ArrayMinSize(0)
+  professors?: number[];
 }

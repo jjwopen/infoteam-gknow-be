@@ -1,12 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { Professor, Course, Department } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
+import { Professor, Course, Department, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateCourseDto } from './dto/CreateCourseDto';
-import { CreateDepartmentDto } from './dto/CreateDepartmentDto';
-import { CreateProfessorDto } from './dto/CreateProfessorDto';
-import { UpdateCourseDto } from './dto/UpdateCourseDto';
-import { UpdateDepartmentDto } from './dto/UpdateDepartmentDto';
-import { UpdateProfessorDto } from './dto/UpdateProfessorDto';
+
 @Injectable()
 export class Repository {
   constructor(private prisma: PrismaService) {}
@@ -15,81 +10,95 @@ export class Repository {
     const professor = await this.prisma.professor.findMany({
       where: { name: name },
     });
-    if (!professor) {
-      throw new NotFoundException(`이름이 ${name}인 교수 없음`);
-    }
     return professor;
   }
 
-  async findProfessorById(id: number): Promise<Professor> {
+  async findProfessorById(id: number): Promise<Professor | null> {
     const professor = await this.prisma.professor.findUnique({
       where: { id: id },
     });
-    if (!professor) {
-      throw new NotFoundException(`id가 ${id}인 교수가 없음`);
-    }
     return professor;
   }
 
-  async findByCourse(course: string): Promise<Professor[]> {
-    const inputCourse = await this.findCourseByName(course);
-    if (!inputCourse) {
-      throw new NotFoundException(`${course}는 존재하지 않는 과목입니다.`);
-    }
+  async findProfessorByCourse(course: string): Promise<Professor[]> {
     const professor = await this.prisma.professor.findMany({
       where: { courses: { some: { name: course } } },
     });
-    if (!professor.length) {
-      throw new NotFoundException(`${course}을 담당하는 교수님은 없습니다.`);
-    }
     return professor;
   }
 
-  async findCourseByName(name: string): Promise<Course> {
+  async findCourseByName(name: string): Promise<Course | null> {
     const course = await this.prisma.course.findUnique({
       where: { name: name },
     });
-    if (!course) {
-      throw new NotFoundException(`${name}는 존재하지 않는 과목입니다.`);
-    }
     return course;
   }
 
-  async DepartmentByName(name: string): Promise<Department> {
+  async findDepartmentByName(name: string): Promise<Department | null> {
     const department = await this.prisma.department.findUnique({
       where: { name: name },
     });
-    if (!department) {
-      throw new NotFoundException(`${name}인 부서는 없습니다.`);
-    }
     return department;
   }
 
   async findProfessorByDepartment(name: string): Promise<Professor[]> {
-    const inputDepartment = await this.DepartmentByName(name);
-    if (!inputDepartment) {
-      throw new NotFoundException(`${name}인 부서는 없습니다.`);
-    }
     const Professor = await this.prisma.professor.findMany({
       where: { departments: { some: { name: name } } },
     });
-    if (Professor.length) {
-      throw new NotFoundException(`${name}에 속해있는 교수님은 없습니다.`);
-    }
     return Professor;
   }
 
-  async createProfessor(create: CreateProfessorDto): Promise<Professor> {
-    return await this.prisma.professor.create({ data: create });
+  async findCourseById(id: number): Promise<Course | null> {
+    const course = await this.prisma.course.findUnique({ where: { id: id } });
+    return course;
   }
 
-  async createCourse(create: CreateCourseDto) {}
+  async findDepartmentById(id: number): Promise<Department | null> {
+    const department = await this.prisma.department.findUnique({
+      where: { id: id },
+    });
+    return department;
+  }
 
-  async createDepartment(create: CreateDepartmentDto) {}
+  async createProfessor(data: Prisma.ProfessorCreateInput) {
+    return await this.prisma.professor.create({ data: data });
+  }
 
-  async updateProfessor(update: UpdateProfessorDto) {}
+  async createCourse(data: Prisma.CourseCreateInput) {
+    return await this.prisma.course.create({ data: data });
+  }
 
-  async updateCourse(update: UpdateCourseDto) {}
+  async createDepartment(data: Prisma.DepartmentCreateInput) {
+    return await this.prisma.department.create({ data: data });
+  }
 
-  async updateDepartment(update: UpdateDepartmentDto) {}
+  async updateProfessor(id: number, data: Prisma.ProfessorUpdateInput) {
+    return await this.prisma.professor.update({
+      where: { id: id },
+      data: data,
+    });
+  }
+
+  async updateCourse(id: number, data: Prisma.CourseUpdateInput) {
+    return await this.prisma.course.update({ where: { id: id }, data: data });
+  }
+
+  async updateDepartment(id: number, data: Prisma.DepartmentUpdateInput) {
+    return await this.prisma.department.update({
+      where: { id: id },
+      data: data,
+    });
+  }
+
+  async deleteProfessor(id: number) {
+    await this.prisma.professor.delete({ where: { id: id } });
+  }
+
+  async deleteCourse(id: number) {
+    await this.prisma.course.delete({ where: { id: id } });
+  }
+
+  async deleteDepartment(id: number) {
+    await this.prisma.department.delete({ where: { id: id } });
+  }
 }

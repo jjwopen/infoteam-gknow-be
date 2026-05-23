@@ -63,6 +63,18 @@ export class CreateProfessorDto {
   courses!: number[];
 
   @ApiProperty({
+    description: '교수님의 부서, 학과의 id',
+    type: Array,
+    minItems: 1,
+    nullable: true,
+    example: [0, 1, 2],
+  })
+  @IsArray()
+  @IsNotEmpty()
+  @ArrayMinSize(1)
+  departments!: number[];
+
+  @ApiProperty({
     description: '교수님의 이미지',
     type: String,
     nullable: true,

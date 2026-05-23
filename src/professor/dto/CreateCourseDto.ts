@@ -3,6 +3,7 @@ import {
   ArrayMinSize,
   IsArray,
   IsNotEmpty,
+  IsOptional,
   IsString,
   MinLength,
 } from 'class-validator';
@@ -35,12 +36,12 @@ export class CreateCourseDto {
   @ApiProperty({
     description: '교과목의 담당 교수의 id',
     type: String,
-    nullable: false,
-    minItems: 1,
+    nullable: true,
+    minItems: 0,
     example: [1, 2, 3],
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsArray()
-  @ArrayMinSize(1)
-  professors!: number[];
+  @ArrayMinSize(0)
+  professors?: number[];
 }
