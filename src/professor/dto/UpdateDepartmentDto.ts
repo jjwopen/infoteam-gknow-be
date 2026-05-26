@@ -31,4 +31,16 @@ export class UpdateDepartmentDto {
   @IsArray()
   @ArrayMinSize(1)
   professors!: number[];
+
+  @ApiPropertyOptional({
+    description: '학과 대표 id',
+    type: String,
+    minLength: 1,
+    nullable: false,
+    example: 'experment@gist.ac.kr',
+  })
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  emails?: string;
 }

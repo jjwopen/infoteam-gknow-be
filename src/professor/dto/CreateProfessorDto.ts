@@ -40,27 +40,27 @@ export class CreateProfessorDto {
 
   @ApiProperty({
     description: '교수님의 email',
-    type: String,
-    minLength: 1,
+    type: Array,
+    minItems: 1,
     nullable: false,
-    example: 'jihoon@gist.ac.kr',
+    example: ['jihoon@gist.ac.kr'],
   })
-  @IsString()
-  @MinLength(1)
+  @IsArray()
+  @ArrayMinSize(1)
   @IsNotEmpty()
-  email!: string;
+  emails!: string[];
 
   @ApiProperty({
     description: '교수님의 수업들의 id',
     type: Array,
     minItems: 1,
-    nullable: false,
+    nullable: true,
     example: [0, 1, 2],
   })
   @IsArray()
-  @IsNotEmpty()
+  @IsOptional()
   @ArrayMinSize(1)
-  courses!: number[];
+  courses?: number[];
 
   @ApiProperty({
     description: '교수님의 부서, 학과의 id',
@@ -84,14 +84,3 @@ export class CreateProfessorDto {
   @IsString()
   imageURL?: string;
 }
-
-/*model Professor {
-  id Int @id @default(autoincrement())
-  name String
-  email String @unique
-  number Int @unique
-  courses Course[]
-  departments Department[]
-  imageURL String
-}
- */

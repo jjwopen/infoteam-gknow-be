@@ -11,10 +11,19 @@ datasource db {
   provider = "postgresql"
 }
 
+model Email {
+  id Int @id @default(autoincrement())
+  address String @unique
+  professorId Int?
+  professor Professor? @relation(fields: [professorId], references: [id])
+  departmentId Int?
+  department  Department? @relation(fields: [departmentId], references: [id])
+}
+
 model Professor {
   id Int @id @default(autoincrement())
   name String
-  email String @unique
+  emails Email[]
   number Int @unique
   course Course[]
   departments Department[]
@@ -32,4 +41,5 @@ model Department {
   id Int @id @default(autoincrement())
   name String @unique
   professors Professor[]
+  emails Email[]
 }

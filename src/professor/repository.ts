@@ -22,7 +22,7 @@ export class Repository {
 
   async findProfessorByCourse(course: string): Promise<Professor[]> {
     const professor = await this.prisma.professor.findMany({
-      where: { courses: { some: { name: course } } },
+      where: { course: { some: { name: course } } },
     });
     return professor;
   }

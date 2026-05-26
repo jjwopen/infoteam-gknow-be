@@ -43,7 +43,7 @@ export class ProfessorService {
     return course;
   }
 
-  async findDepartmentByName(name: string) {
+  async findDepartmentByName(name: string): Promise<Department> {
     const department = await this.repo.findDepartmentByName(name);
     if (!department) {
       throw new NotFoundException(`${name}인 부서가 없습니다.`);
@@ -51,7 +51,7 @@ export class ProfessorService {
     return department;
   }
 
-  async findProfessorByDepartment(name: string) {
+  async findProfessorByDepartment(name: string): Promise<Professor[]> {
     await this.findDepartmentByName(name);
     const professor = await this.repo.findProfessorByDepartment(name);
     if (!professor.length) {
@@ -60,19 +60,33 @@ export class ProfessorService {
     return professor;
   }
 
-  async createProfessor(create: CreateProfessorDto) {
-    const { courses, departments, ...dataWithoutDepartmentAndCourse } = create;
+  async createProfessor(create: CreateProfessorDto): Promise<Professor> {
+    const {
+      emails,
+      courses,
+      departments,
+      ...dataWithoutDepartmentAndCourseAndEmail
+    } = create;
     const prismaData: Prisma.ProfessorCreateInput = {
-      ...dataWithoutDepartmentAndCourse,
-      courses: { connect: courses.map((courseId) => ({ id: courseId })) },
-      departments: {
-        connect: departments.map((departmentsId) => ({ id: departmentsId })),
-      },
+      ...dataWithoutDepartmentAndCourseAndEmail,
+      emails: emails.length
+        ? { create: emails.map((emailAddress) => ({ address: emailAddress })) }
+        : undefined,
+      course: courses
+        ? { connect: courses.map((courseId) => ({ id: courseId })) }
+        : undefined,
+      departments: departments
+        ? {
+            connect: departments.map((departmentsId) => ({
+              id: departmentsId,
+            })),
+          }
+        : undefined,
     };
     return await this.repo.createProfessor(prismaData);
   }
 
-  async createCourse(create: CreateCourseDto) {
+  async createCourse(create: CreateCourseDto): Promise<Course> {
     const { professors, ...dataWithoutProfessor } = create;
     const Data: Prisma.CourseCreateInput = {
       ...dataWithoutProfessor,
@@ -83,10 +97,11 @@ export class ProfessorService {
     return await this.repo.createCourse(Data);
   }
 
-  async createDepartment(create: CreateDepartmentDto) {
-    const { professors, ...dataWithoutProfessor } = create;
+  async createDepartment(create: CreateDepartmentDto): Promise<Department> {
+    const { emails, professors, ...dataWithoutProfessor } = create;
     const Data: Prisma.DepartmentCreateInput = {
       ...dataWithoutProfessor,
+      emails: { create: { address: emails } },
       professors: {
         connect: professors?.map((professorId) => ({ id: professorId })),
       },
@@ -94,11 +109,21 @@ export class ProfessorService {
     return await this.repo.createDepartment(Data);
   }
 
-  async updateProfessor(id: number, update: UpdateProfessorDto) {
-    const { courses, departments, ...dataWithoutCourseAndDepartment } = update;
+  async updateProfessor(
+    id: number,
+    update: UpdateProfessorDto,
+  ): Promise<Professor> {
+    const { emails, courses, departments, ...dataWithoutCourseAndDepartment } =
+      update;
     const Data: Prisma.ProfessorUpdateInput = {
       ...dataWithoutCourseAndDepartment,
-      courses: courses
+      emails: emails
+        ? {
+            deleteMany: {},
+            create: emails.map((emailAddress) => ({ address: emailAddress })),
+          }
+        : undefined,
+      course: courses
         ? { connect: courses.map((courseID) => ({ id: courseID })) }
         : undefined,
       departments: departments
@@ -112,7 +137,7 @@ export class ProfessorService {
     return await this.repo.updateProfessor(id, Data);
   }
 
-  async updateCourse(id: number, update: UpdateCourseDto) {
+  async updateCourse(id: number, update: UpdateCourseDto): Promise<Course> {
     const { professors, ...dataWithoutProfessor } = update;
     const Data: Prisma.CourseUpdateInput = {
       ...dataWithoutProfessor,
@@ -125,10 +150,14 @@ export class ProfessorService {
     return await this.repo.updateCourse(id, Data);
   }
 
-  async updateDepartment(id: number, update: UpdateDepartmentDto) {
-    const { professors, ...dataWithoutProfessors } = update;
+  async updateDepartment(
+    id: number,
+    update: UpdateDepartmentDto,
+  ): Promise<Department> {
+    const { emails, professors, ...dataWithoutProfessors } = update;
     const Data: Prisma.DepartmentUpdateInput = {
       ...dataWithoutProfessors,
+      emails: emails ? { create: { address: emails } } : undefined,
       professors: professors
         ? { connect: professors.map((professorsId) => ({ id: professorsId })) }
         : undefined,

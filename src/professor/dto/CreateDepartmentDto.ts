@@ -32,4 +32,16 @@ export class CreateDepartmentDto {
   @IsArray()
   @ArrayMinSize(0)
   professors?: number[];
+
+  @ApiProperty({
+    description: '학과 대표 id',
+    type: String,
+    minLength: 1,
+    nullable: false,
+    example: 'experment@gist.ac.kr',
+  })
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(1)
+  emails!: string;
 }

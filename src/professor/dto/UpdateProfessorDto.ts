@@ -42,12 +42,12 @@ export class UpdateProfessorDto {
     type: String,
     minLength: 1,
     nullable: true,
-    example: 'jihoon@gist.ac.kr',
+    example: ['jihoon@gist.ac.kr'],
   })
   @IsOptional()
-  @IsString()
-  @MinLength(1)
-  email?: string;
+  @IsArray()
+  @ArrayMinSize(1)
+  emails?: string[];
 
   @ApiPropertyOptional({
     description: '교수님의 수업들',
