@@ -6,6 +6,18 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class Repository {
   constructor(private prisma: PrismaService) {}
 
+  async findAllProfessor(): Promise<Professor[]> {
+    return await this.prisma.professor.findMany();
+  }
+
+  async findAllCourse(): Promise<Course[]> {
+    return await this.prisma.course.findMany();
+  }
+
+  async findAllDepartment(): Promise<Department[]> {
+    return await this.prisma.department.findMany();
+  }
+
   async findProfessorByName(name: string): Promise<Professor[]> {
     const professor = await this.prisma.professor.findMany({
       where: { name: name },
@@ -43,7 +55,7 @@ export class Repository {
 
   async findProfessorByDepartment(name: string): Promise<Professor[]> {
     const Professor = await this.prisma.professor.findMany({
-      where: { departments: { some: { name: name } } },
+      where: { departments: { some: { department: { name: name } } } },
     });
     return Professor;
   }

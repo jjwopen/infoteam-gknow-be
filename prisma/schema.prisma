@@ -22,11 +22,11 @@ model Email {
 
 model Professor {
   id Int @id @default(autoincrement())
-  name String
+  name String 
+  nameKorea String
   emails Email[]
-  number Int @unique
   course Course[]
-  departments Department[]
+  departments ProfessorDepartment[]
   imageURL String @default("https://example.com/default-image.jpg")
 }
 
@@ -40,6 +40,20 @@ model Course {
 model Department {
   id Int @id @default(autoincrement())
   name String @unique
-  professors Professor[]
+  nameKorea  String @unique
+  address String? @unique
+  professors ProfessorDepartment[]
   emails Email[]
 }
+
+model ProfessorDepartment {
+  id           Int        @id @default(autoincrement())
+  number       Int        @unique
+  professor    Professor  @relation(fields: [professorId], references: [id])
+  professorId  Int
+  department   Department @relation(fields: [departmentId], references: [id])
+  departmentId Int
+
+  @@unique([professorId, departmentId]) // 교수+부서 조합은 유일
+}
+

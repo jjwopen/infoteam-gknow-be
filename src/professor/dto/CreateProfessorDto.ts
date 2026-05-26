@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
@@ -9,9 +10,47 @@ import {
   Max,
   Min,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
 
+export class DepartmentEntryDto {
+  @ApiProperty({
+    description: '부서의 id',
+    type: Number,
+    nullable: false,
+    example: 1,
+  })
+  @IsNumber()
+  departmentId!: number;
+
+  @ApiProperty({
+    description: '내선번호',
+    type: Number,
+    nullable: false,
+    minimum: 2000,
+    maximum: 9999,
+    example: 2000,
+  })
+  @IsNumber()
+  @Min(2000)
+  @Max(9999)
+  @IsNotEmpty()
+  number!: number;
+}
+
 export class CreateProfessorDto {
+  @ApiProperty({
+    description: '교수님 영어이름',
+    type: String,
+    minLength: 2,
+    nullable: false,
+    example: 'JiHun',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(2)
+  name!: string;
+
   @ApiProperty({
     description: '교수님 이름',
     type: String,
@@ -22,21 +61,7 @@ export class CreateProfessorDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(2)
-  name!: string;
-
-  @ApiProperty({
-    description: '교수님 내선 번호',
-    type: Number,
-    minimum: 2000,
-    maximum: 9999,
-    nullable: false,
-    example: 2000,
-  })
-  @IsNumber()
-  @Min(2000)
-  @Max(9999)
-  @IsNotEmpty()
-  number!: number;
+  nameKorea!: string;
 
   @ApiProperty({
     description: '교수님의 email',
@@ -63,16 +88,18 @@ export class CreateProfessorDto {
   courses?: number[];
 
   @ApiProperty({
-    description: '교수님의 부서, 학과의 id',
+    description: '교수님의 부서 id와 내선번호',
     type: Array,
     minItems: 1,
     nullable: true,
-    example: [0, 1, 2],
+    example: [{ departmentId: 1, number: '2000' }],
   })
   @IsArray()
   @IsNotEmpty()
   @ArrayMinSize(1)
-  departments!: number[];
+  @ValidateNested({ each: true })
+  @Type(() => DepartmentEntryDto)
+  departments!: DepartmentEntryDto[];
 
   @ApiProperty({
     description: '교수님의 이미지',

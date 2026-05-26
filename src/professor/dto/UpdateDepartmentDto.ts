@@ -1,11 +1,13 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
-  ArrayMinSize,
   IsArray,
   IsOptional,
   IsString,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
+import { ProfessorEntryDto } from './CreateDepartmentDto';
 
 export class UpdateDepartmentDto {
   @ApiPropertyOptional({
@@ -18,7 +20,19 @@ export class UpdateDepartmentDto {
   @IsOptional()
   @IsString()
   @MinLength(1)
-  name!: string;
+  name?: string;
+
+  @ApiPropertyOptional({
+    description: '학과의 이름',
+    type: String,
+    minLength: 1,
+    nullable: true,
+    example: '인문사회과학부',
+  })
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  nameKorea?: string;
 
   @ApiPropertyOptional({
     description: '학과 내 교수님 id',
@@ -29,8 +43,9 @@ export class UpdateDepartmentDto {
   })
   @IsOptional()
   @IsArray()
-  @ArrayMinSize(1)
-  professors!: number[];
+  @ValidateNested({ each: true })
+  @Type(() => ProfessorEntryDto)
+  professors?: ProfessorEntryDto[];
 
   @ApiPropertyOptional({
     description: '학과 대표 id',
@@ -43,4 +58,16 @@ export class UpdateDepartmentDto {
   @IsString()
   @MinLength(1)
   emails?: string;
+
+  @ApiPropertyOptional({
+    description: '학과 사이트',
+    type: String,
+    minLength: 1,
+    nullable: true,
+    example: 'experment@gist.ac.kr',
+  })
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  address?: string;
 }

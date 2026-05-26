@@ -11,6 +11,18 @@ import { UpdateDepartmentDto } from './dto/UpdateDepartmentDto';
 export class ProfessorService {
   constructor(private readonly repo: Repository) {}
 
+  async findAllProfessor(): Promise<Professor[]> {
+    return await this.repo.findAllProfessor();
+  }
+
+  async findAllCourse(): Promise<Course[]> {
+    return await this.repo.findAllCourse();
+  }
+
+  async findAllDepartment(): Promise<Department[]> {
+    return await this.repo.findAllDepartment();
+  }
+
   async findProfessorByName(name: string): Promise<Professor[]> {
     const professor = await this.repo.findProfessorByName(name);
     if (!professor.length) {
@@ -77,8 +89,9 @@ export class ProfessorService {
         : undefined,
       departments: departments
         ? {
-            connect: departments.map((departmentsId) => ({
-              id: departmentsId,
+            create: departments.map(({ departmentId, number }) => ({
+              number,
+              department: { connect: { id: departmentId } },
             })),
           }
         : undefined,
@@ -103,7 +116,10 @@ export class ProfessorService {
       ...dataWithoutProfessor,
       emails: { create: { address: emails } },
       professors: {
-        connect: professors?.map((professorId) => ({ id: professorId })),
+        create: professors?.map(({ professorId, number }) => ({
+          number,
+          professor: { connect: { id: professorId } },
+        })),
       },
     };
     return await this.repo.createDepartment(Data);
@@ -128,8 +144,10 @@ export class ProfessorService {
         : undefined,
       departments: departments
         ? {
-            connect: departments.map((departmentsId) => ({
-              id: departmentsId,
+            deleteMany: {},
+            create: departments.map(({ departmentId, number }) => ({
+              number,
+              department: { connect: { id: departmentId } },
             })),
           }
         : undefined,
@@ -159,7 +177,13 @@ export class ProfessorService {
       ...dataWithoutProfessors,
       emails: emails ? { create: { address: emails } } : undefined,
       professors: professors
-        ? { connect: professors.map((professorsId) => ({ id: professorsId })) }
+        ? {
+            deleteMany: {},
+            create: professors.map(({ professorId, number }) => ({
+              number,
+              professor: { connect: { id: professorId } },
+            })),
+          }
         : undefined,
     };
     return await this.repo.updateDepartment(id, Data);
