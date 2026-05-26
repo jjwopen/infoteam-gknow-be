@@ -51,6 +51,24 @@ export class ProfessorController {
     return await this.professorService.createDepartment(createDto);
   }
 
+  @Get()
+  @ApiOkResponse({ description: '교수님 전체 조회 성공' })
+  async findAllProfessor() {
+    return await this.professorService.findAllProfessor();
+  }
+
+  @Get('courses')
+  @ApiOkResponse({ description: '과목 전체 조회 성공' })
+  async findAllCourse() {
+    return await this.professorService.findAllCourse();
+  }
+
+  @Get('departments')
+  @ApiOkResponse({ description: '부서 전체 조회 성공' })
+  async findAllDepartment() {
+    return await this.professorService.findAllDepartment();
+  }
+
   @Get('search/name')
   @ApiOkResponse({ description: '교수님 찾기 성공' })
   @ApiOperation({ summary: '이름 기반 교수님 찾기' })
