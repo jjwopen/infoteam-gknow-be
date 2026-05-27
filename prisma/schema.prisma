@@ -54,6 +54,15 @@ model ProfessorDepartment {
   department   Department @relation(fields: [departmentId], references: [id])
   departmentId Int
 
-  @@unique([professorId, departmentId]) // 교수+부서 조합은 유일
+  @@unique([professorId, departmentId]) 
 }
 
+model Facility {
+  id Int @id @default(autoincrement())
+  name String @unique
+  email String?
+  startTime String
+  endTime String
+  number Int?
+  location String?
+}
