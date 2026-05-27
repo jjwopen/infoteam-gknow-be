@@ -1,15 +1,106 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  }
+}
+
+model EmailRaw {
+  id                String   @id @default(uuid())
+  externalMessageId String   @unique
+
+  subject           String?
+  senderName        String?
+  senderEmail       String?
+  receivedAt        DateTime?
+
+  bodyHtml          String?
+  bodyText          String?
+  bodyPreview       String?
+
+  renderedHtml      String?
+
+  hasAttachments    Boolean  @default(false)
+  createdAt         DateTime @default(now())
+
+  attachments       EmailAttachment[]
+  notifications Notification[]
+
+  @@index([receivedAt])
+}
+
+model EmailAttachment {
+  id                   String   @id @default(uuid())
+  emailRawId           String
+
+  externalAttachmentId String? @unique
+  fileName             String
+  contentType          String?
+  size                 Int?
+
+  storageUrl           String
+  storageKey           String?
+
+  isInline             Boolean  @default(false)
+  contentId            String?
+
+  createdAt            DateTime @default(now())
+
+  emailRaw             EmailRaw @relation(fields: [emailRawId], references: [id])
+
+  @@index([emailRawId])
+  @@index([contentId])
+}
+
+model MailSyncState {
+  id           String   @id @default(uuid())
+  deltaToken   String?
+  lastSyncedAt DateTime?
+  updatedAt    DateTime @updatedAt
+}
+
+model MailSyncLog {
+  id             String   @id @default(uuid())
+  syncStartedAt  DateTime @default(now())
+  syncFinishedAt DateTime?
+  status         String
+  fetchedCount   Int      @default(0)
+  errorMessage   String?
+}
+
+model OutlookToken {
+  id           String   @id @default(uuid())
+  accountEmail String   @unique
+
+  accessToken  String?  @db.Text
+  refreshToken String?  @db.Text
+
+  homeAccountId String?
+  tokenCache    String? @db.Text
+
+  expiresAt    DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  emailRawId String
+  title      String
+  message    String?
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  emailRaw   EmailRaw @relation(fields: [emailRawId], references: [id])
+}
+
+model IgnoredEmail {
+  id                String   @id @default(uuid())
+  externalMessageId String   @unique
+  reason            String?
+  createdAt         DateTime @default(now())
+}
 
 model Email {
   id Int @id @default(autoincrement())
