@@ -5,13 +5,14 @@ import { PrismaModule } from './prisma/prisma.module';
 import { MailModule } from './mail/mail.module';
 import { GraphModule } from './mail/graph/graph.module';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    PrismaModule,MailModule, GraphModule
+    ScheduleModule.forRoot(),PrismaModule,MailModule, GraphModule
    ],
   controllers: [AppController],
   providers: [AppService],

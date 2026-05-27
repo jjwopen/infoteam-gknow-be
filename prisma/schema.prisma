@@ -25,6 +25,7 @@ model EmailRaw {
   createdAt         DateTime @default(now())
 
   attachments       EmailAttachment[]
+  notifications Notification[]
 
   @@index([receivedAt])
 }
@@ -33,7 +34,7 @@ model EmailAttachment {
   id                   String   @id @default(uuid())
   emailRawId           String
 
-  externalAttachmentId String?
+  externalAttachmentId String? @unique
   fileName             String
   contentType          String?
   size                 Int?
@@ -66,4 +67,37 @@ model MailSyncLog {
   status         String
   fetchedCount   Int      @default(0)
   errorMessage   String?
+}
+
+model OutlookToken {
+  id           String   @id @default(uuid())
+  accountEmail String   @unique
+
+  accessToken  String?  @db.Text
+  refreshToken String?  @db.Text
+
+  homeAccountId String?
+  tokenCache    String? @db.Text
+
+  expiresAt    DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  emailRawId String
+  title      String
+  message    String?
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  emailRaw   EmailRaw @relation(fields: [emailRawId], references: [id])
+}
+
+model IgnoredEmail {
+  id                String   @id @default(uuid())
+  externalMessageId String   @unique
+  reason            String?
+  createdAt         DateTime @default(now())
 }

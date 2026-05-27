@@ -16,11 +16,18 @@ export class GraphController {
   async callback(@Query('code') code: string) {
     const tokenResult = await this.graphService.handleCallback(code);
 
+    await this.graphService.saveOutlookToken(
+    tokenResult,
+    );
+
     const messages = await this.graphService.getMessages(
       tokenResult.accessToken!,
     );
 
-    await this. graphService.saveMessages(messages);
+   await this.graphService.saveMessages(
+  messages,
+  tokenResult.accessToken!,
+  );
 
      return {
       message: 'Outlook connected and messages saved successfully',
