@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from './repository';
+import { ProfessorRepository } from './professor.repository';
 import { Course, Department, Professor, Prisma } from '@prisma/client';
 import { CreateProfessorDto } from './dto/CreateProfessorDto';
 import { CreateCourseDto } from './dto/CreateCourseDto';
@@ -9,7 +9,7 @@ import { UpdateCourseDto } from './dto/UpdateCourseDto';
 import { UpdateDepartmentDto } from './dto/UpdateDepartmentDto';
 @Injectable()
 export class ProfessorService {
-  constructor(private readonly repo: Repository) {}
+  constructor(private readonly repo: ProfessorRepository) {}
 
   async findAllProfessor(): Promise<Professor[]> {
     return await this.repo.findAllProfessor();

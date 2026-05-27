@@ -5,7 +5,7 @@ import { CreateFacilityDto } from './dto/CreateFacilityDto';
 import { UpdateFacilityDto } from './dto/UpdateFacilityDto';
 
 @Injectable()
-export class Repository {
+export class FacilityRepository {
   constructor(private prisma: PrismaService) {}
 
   async findAll(): Promise<Facility[]> {

@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from './repository';
+import { FacilityRepository } from './facility.repository';
 import { Facility } from '@prisma/client';
 import { CreateFacilityDto } from './dto/CreateFacilityDto';
 import { UpdateFacilityDto } from './dto/UpdateFacilityDto';
 
 @Injectable()
 export class FacilityService {
-  constructor(private readonly repo: Repository) {}
+  constructor(private readonly repo: FacilityRepository) {}
 
   async findAll(): Promise<Facility[]> {
     return await this.repo.findAll();
