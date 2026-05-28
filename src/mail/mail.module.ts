@@ -8,6 +8,6 @@ import { PrismaModule } from 'prisma/prisma.module';
 @Module({
   providers: [MailService, MailSyncService],
   imports: [GraphModule, PrismaModule],
-  controllers: [MailSyncController]
+  controllers: [MailSyncController],
 })
 export class MailModule {}

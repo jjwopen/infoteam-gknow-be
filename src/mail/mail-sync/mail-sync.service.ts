@@ -5,35 +5,36 @@ import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class MailSyncService {
-
-constructor(
+  constructor(
     private readonly prisma: PrismaService,
     private readonly graphService: GraphService,
   ) {}
 
-async findAllMails() {
-  return this.prisma.emailRaw.findMany({
-    orderBy: {
-      receivedAt: 'desc',
-    },
+  async findAllMails() {
+    return this.prisma.emailRaw.findMany({
+      orderBy: {
+        receivedAt: 'desc',
+      },
+      select: {
+        id: true,
+        subject: true,
+        senderName: true,
+        senderEmail: true,
+        bodyPreview: true,
+        receivedAt: true,
+        hasAttachments: true,
+      },
+    });
+  }
+
+  const mail = await this.prisma.emailRaw.findUnique({
+    async findMailById(id: string) {
+    where: { id },
     select: {
       id: true,
       subject: true,
       senderName: true,
       senderEmail: true,
-      bodyPreview: true,
-      receivedAt: true,
-      hasAttachments: true,
-    },
-  });
-}
-
-async findMailById(id: string) {
-  const mail = await this.prisma.emailRaw.findUnique({
-    where: { id },
-    select: {
-      id: true,
-      subject: true,
       receivedAt: true,
       bodyHtml: true,
       bodyPreview: true,

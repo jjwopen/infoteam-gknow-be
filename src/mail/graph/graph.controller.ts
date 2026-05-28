@@ -16,9 +16,7 @@ export class GraphController {
   async callback(@Query('code') code: string) {
     const tokenResult = await this.graphService.handleCallback(code);
 
-    await this.graphService.saveOutlookToken(
-    tokenResult,
-    );
+    await this.graphService.saveOutlookToken(tokenResult);
 
     const messages = await this.graphService.getMessages(
       tokenResult.accessToken!,
