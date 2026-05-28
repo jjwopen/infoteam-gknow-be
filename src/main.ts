@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 
-import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
@@ -47,11 +47,11 @@ async function bootstrap() {
    * ex)
    * /v1/users
    */
-  app.enableVersioning({
+  /*  app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1',
   });
-
+*/
   /*
    * Swagger
    */
@@ -78,8 +78,7 @@ async function bootstrap() {
   /*
    * Server Start
    */
-  await app.listen(3000);
-
+  await app.listen(process.env.PORT || 3000);
   console.log(`🚀 Server running on http://localhost:3000`);
 
   console.log(`📄 Swagger Docs: http://localhost:3000/docs`);
