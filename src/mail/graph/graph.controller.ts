@@ -22,16 +22,12 @@ export class GraphController {
       tokenResult.accessToken!,
     );
 
-   await this.graphService.saveMessages(
-  messages,
-  tokenResult.accessToken!,
-  );
+    await this.graphService.saveMessages(messages, tokenResult.accessToken!);
 
-     return {
+    return {
       message: 'Outlook connected and messages saved successfully',
-      connectedAccount:
-        tokenResult.account?.username,
-     savedCount: messages.length,
+      connectedAccount: tokenResult.account?.username,
+      savedCount: messages.length,
     };
   }
 }

@@ -1,14 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 
-import {
-  ValidationPipe,
-  VersioningType,
-} from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 
-import {
-  SwaggerModule,
-  DocumentBuilder,
-} from '@nestjs/swagger';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
 
@@ -23,19 +17,9 @@ async function bootstrap() {
 
     credentials: true,
 
-    methods: [
-      'GET',
-      'POST',
-      'PUT',
-      'PATCH',
-      'DELETE',
-      'OPTIONS',
-    ],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-    ],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   /*
@@ -73,9 +57,7 @@ async function bootstrap() {
    */
   const config = new DocumentBuilder()
     .setTitle('GKnow API')
-    .setDescription(
-      'GKnow Backend API Documentation',
-    )
+    .setDescription('GKnow Backend API Documentation')
     .setVersion('1.0')
 
     /*
@@ -85,35 +67,22 @@ async function bootstrap() {
 
     .build();
 
-  const document =
-    SwaggerModule.createDocument(
-      app,
-      config,
-    );
+  const document = SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup(
-    'docs',
-    app,
-    document,
-    {
-      swaggerOptions: {
-        persistAuthorization: true,
-      },
+  SwaggerModule.setup('docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
     },
-  );
+  });
 
   /*
    * Server Start
    */
   await app.listen(3000);
 
-  console.log(
-    `🚀 Server running on http://localhost:3000`,
-  );
+  console.log(`🚀 Server running on http://localhost:3000`);
 
-  console.log(
-    `📄 Swagger Docs: http://localhost:3000/docs`,
-  );
+  console.log(`📄 Swagger Docs: http://localhost:3000/docs`);
 }
 
 void bootstrap();

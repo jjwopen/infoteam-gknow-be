@@ -104,10 +104,11 @@ Prisma와 NestJS를 기반으로 구축된 교수 정보, 담당 교과목, 소�
 ---
 
 ## 🛠️ Tech Stack
-* **Framework**: NestJS
-* **Database ORM**: Prisma
-* **Database**: PostgreSQL
-* **Documentation**: Swagger (`@nestjs/swagger`)
+
+- **Framework**: NestJS
+- **Database ORM**: Prisma
+- **Database**: PostgreSQL
+- **Documentation**: Swagger (`@nestjs/swagger`)
 
 ---
 
@@ -115,10 +116,10 @@ Prisma와 NestJS를 기반으로 구축된 교수 정보, 담당 교과목, 소�
 
 Prisma 스키마를 기반으로 한 모델 간의 주요 관계는 다음과 같습니다.
 
-* **Professor (교수)** ↔ **Email (이메일)**: `1:N` 관계 (한 명의 교수는 여러 이메일을 가질 수 있음)
-* **Department (부서/학과)** ↔ **Email (이메일)**: `1:N` 관계 (한 부서는 여러 이메일을 가질 수 있음)
-* **Professor (교수)** ↔ **Course (교과목)**: `M:N` 관계 (Prisma 암시적 다대다 관계)
-* **Professor (교수)** ↔ **Department (부서/학과)**: `ProfessorDepartment` 연결 모델을 통한 `M:N` 관계 (교수 고유 번호 포함)
+- **Professor (교수)** ↔ **Email (이메일)**: `1:N` 관계 (한 명의 교수는 여러 이메일을 가질 수 있음)
+- **Department (부서/학과)** ↔ **Email (이메일)**: `1:N` 관계 (한 부서는 여러 이메일을 가질 수 있음)
+- **Professor (교수)** ↔ **Course (교과목)**: `M:N` 관계 (Prisma 암시적 다대다 관계)
+- **Professor (교수)** ↔ **Department (부서/학과)**: `ProfessorDepartment` 연결 모델을 통한 `M:N` 관계 (교수 고유 번호 포함)
 
 ---
 
@@ -127,50 +128,56 @@ Prisma 스키마를 기반으로 한 모델 간의 주요 관계는 다음과 �
 모든 기본 엔드포인트는 `/professors`를 접두사로 사용합니다.
 
 ### 1. 교수(Professor) 관련 API
-| HTTP Method | URL | Description |
-| :--- | :--- | :--- |
-| `POST` | `/professors` | 새로운 교수 정보 추가 (이메일 생성, 과목/부서 연결 지원) |
-| `GET` | `/professors` | 전체 교수 목록 조회 |
-| `GET` | `/professors/:id` | ID 기반 특정 교수 상세 조회 |
-| `GET` | `/professors/search/name?name=...` | 이름 기반 교수 검색 |
-| `GET` | `/professors/search/course?name=...` | 담당 교과목 이름 기반 담당 교수 검색 |
-| `GET` | `/professors/search/department?name=...` | 소속 부서 이름 기반 교수 목록 검색 |
-| `PATCH` | `/professors/:id` | 교수 정보 수정 (이메일 및 부서 갱신 포함) |
-| `DELETE` | `/professors/:id` | 교수 정보 삭제 |
+
+| HTTP Method | URL                                      | Description                                              |
+| :---------- | :--------------------------------------- | :------------------------------------------------------- |
+| `POST`      | `/professors`                            | 새로운 교수 정보 추가 (이메일 생성, 과목/부서 연결 지원) |
+| `GET`       | `/professors`                            | 전체 교수 목록 조회                                      |
+| `GET`       | `/professors/:id`                        | ID 기반 특정 교수 상세 조회                              |
+| `GET`       | `/professors/search/name?name=...`       | 이름 기반 교수 검색                                      |
+| `GET`       | `/professors/search/course?name=...`     | 담당 교과목 이름 기반 담당 교수 검색                     |
+| `GET`       | `/professors/search/department?name=...` | 소속 부서 이름 기반 교수 목록 검색                       |
+| `PATCH`     | `/professors/:id`                        | 교수 정보 수정 (이메일 및 부서 갱신 포함)                |
+| `DELETE`    | `/professors/:id`                        | 교수 정보 삭제                                           |
 
 ### 2. 교과목(Course) 관련 API
-| HTTP Method | URL | Description |
-| :--- | :--- | :--- |
-| `POST` | `/professors/courses` | 새로운 과목 추가 (담당 교수 연결 지원) |
-| `GET` | `/professors/courses` | 전체 교과목 목록 조회 |
-| `GET` | `/professors/courses/:id` | ID 기반 특정 과목 조회 |
-| `GET` | `/professors/courses/search?name=...` | 과목 이름 기반 검색 |
-| `PATCH` | `/professors/courses/:id` | 과목 정보 수정 (담당 교수 변경 등) |
-| `DELETE` | `/professors/courses/:id` | 과목 삭제 |
+
+| HTTP Method | URL                                   | Description                            |
+| :---------- | :------------------------------------ | :------------------------------------- |
+| `POST`      | `/professors/courses`                 | 새로운 과목 추가 (담당 교수 연결 지원) |
+| `GET`       | `/professors/courses`                 | 전체 교과목 목록 조회                  |
+| `GET`       | `/professors/courses/:id`             | ID 기반 특정 과목 조회                 |
+| `GET`       | `/professors/courses/search?name=...` | 과목 이름 기반 검색                    |
+| `PATCH`     | `/professors/courses/:id`             | 과목 정보 수정 (담당 교수 변경 등)     |
+| `DELETE`    | `/professors/courses/:id`             | 과목 삭제                              |
 
 ### 3. 부서/학과(Department) 관련 API
-| HTTP Method | URL | Description |
-| :--- | :--- | :--- |
-| `POST` | `/professors/departments` | 새로운 부서 추가 (소속 교수 및 이메일 연결 지원) |
-| `GET` | `/professors/departments` | 전체 부서 목록 조회 |
-| `GET` | `/professors/departments/:id` | ID 기반 특정 부서 조회 |
-| `GET` | `/professors/departments/search?name=...` | 부서 이름 기반 검색 |
-| `PATCH` | `/professors/departments/:id` | 부서 정보 수정 (소속 교수 리스트 및 이메일 갱신) |
-| `DELETE` | `/professors/departments/:id` | 부서 삭제 |
+
+| HTTP Method | URL                                       | Description                                      |
+| :---------- | :---------------------------------------- | :----------------------------------------------- |
+| `POST`      | `/professors/departments`                 | 새로운 부서 추가 (소속 교수 및 이메일 연결 지원) |
+| `GET`       | `/professors/departments`                 | 전체 부서 목록 조회                              |
+| `GET`       | `/professors/departments/:id`             | ID 기반 특정 부서 조회                           |
+| `GET`       | `/professors/departments/search?name=...` | 부서 이름 기반 검색                              |
+| `PATCH`     | `/professors/departments/:id`             | 부서 정보 수정 (소속 교수 리스트 및 이메일 갱신) |
+| `DELETE`    | `/professors/departments/:id`             | 부서 삭제                                        |
 
 ---
 
 ## 💡 주요 구현 특징
 
-* **예외 처리 (Exception Handling)**: 존재하지 않는 ID나 이름으로 데이터 조회/수정/삭제 시 `NotFoundException`이 발생하며, 유저 친화적인 에러 메시지를 반환합니다.
-* **레이어드 아키텍처 (Layered Architecture)**: `Controller -> Service -> Repository -> Prisma` 구조로 계층이 완벽히 분리되어 있어 유지보수와 확장성이 뛰어납니다.
-* **트랜잭션 안전성**: `Update` 관련 API 호출 시 기존에 연결되어 있던 관계 데이터(`emails`, `departments`)를 `deleteMany` 후 새롭게 `create` 하여 데이터 무결성을 보장합니다.
+- **예외 처리 (Exception Handling)**: 존재하지 않는 ID나 이름으로 데이터 조회/수정/삭제 시 `NotFoundException`이 발생하며, 유저 친화적인 에러 메시지를 반환합니다.
+- **레이어드 아키텍처 (Layered Architecture)**: `Controller -> Service -> Repository -> Prisma` 구조로 계층이 완벽히 분리되어 있어 유지보수와 확장성이 뛰어납니다.
+- **트랜잭션 안전성**: `Update` 관련 API 호출 시 기존에 연결되어 있던 관계 데이터(`emails`, `departments`)를 `deleteMany` 후 새롭게 `create` 하여 데이터 무결성을 보장합니다.
 
 ---
 
 ## 🏃‍♂️ 시작하기 (Getting Started)
 
 ### 1. 환경 변수 설정
+
 프로젝트 루트 디렉토리에 `.env` 파일을 생성하고 데이터베이스 연결 정보를 입력합니다.
+
 ```env
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
+```
