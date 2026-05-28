@@ -34,7 +34,11 @@ async findMailById(id: string) {
     select: {
       id: true,
       subject: true,
+
+      senderName: true,
+      senderEmail: true,
       receivedAt: true,
+      
       bodyHtml: true,
       bodyPreview: true,
       hasAttachments: true,
