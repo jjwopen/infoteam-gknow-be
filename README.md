@@ -179,5 +179,82 @@ Prisma 스키마를 기반으로 한 모델 간의 주요 관계는 다음과 �
 프로젝트 루트 디렉토리에 `.env` 파일을 생성하고 데이터베이스 연결 정보를 입력합니다.
 
 ```env
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
+DATABASE_URL=postgresql://neondb_owner:npg_kx2KrftLOn7S@ep-purple-flower-aoc1x849.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
 ```
+
+# 🏢 시설 관리 서비스 (Facility Service)
+
+이 서비스는 시스템 내의 시설 정보를 조회, 생성, 수정, 삭제(CRUD)하기 위한 RESTful API를 제공합니다.
+
+---
+
+## 🛠 주요 기능 및 엔드포인트
+
+| 메서드 | 엔드포인트 | 설명 | 주요 파라미터 |
+| :--- | :--- | :--- | :--- |
+| **GET** | `/facility` | 전체 시설 목록 조회 | - |
+| **GET** | `/facility/search` | 이름 기반 시설 검색 | `name` (Query) |
+| **GET** | `/facility/:id` | ID 기반 시설 상세 조회 | `id` (Param, Integer) |
+| **POST** | `/facility` | 새로운 시설 추가 | `CreateFacilityDto` (Body) |
+| **PATCH** | `/facility/:id` | 기존 시설 정보 수정 | `id` (Param), `UpdateFacilityDto` (Body) |
+| **DELETE** | `/facility/:id` | 시설 정보 삭제 | `id` (Param) |
+
+---
+
+## 📋 API 상세 명세
+
+### 1. 전체 시설 조회
+* **URL:** `/facility`
+* **Method:** `GET`
+* **Summary:** 전체 시설 목록을 반환합니다.
+* **Responses:**
+  * `200 OK`: 전체 시설 목록 조회 성공
+
+### 2. 이름 기반 시설 검색
+* **URL:** `/facility/search`
+* **Method:** `GET`
+* **Summary:** 특정 키워드나 이름을 통해 시설을 검색합니다.
+* **Query Parameters:**
+  * `name` (string): 검색할 시설의 이름
+* **Responses:**
+  * `200 OK`: 시설 이름 검색 성공
+  * `404 Not Found`: 해당 이름을 가진 시설이 없습니다.
+
+### 3. ID 기반 시설 조회
+* **URL:** `/facility/:id`
+* **Method:** `GET`
+* **Summary:** 고유 ID를 통해 특정 시설의 상세 정보를 조회합니다.
+* **Path Parameters:**
+  * `id` (number): 시설 고유 ID (`ParseIntPipe` 적용)
+* **Responses:**
+  * `200 OK`: 시설 상세 조회 성공
+  * `404 Not Found`: 해당 ID를 가진 시설이 없습니다.
+
+### 4. 시설 추가
+* **URL:** `/facility`
+* **Method:** `POST`
+* **Summary:** 새로운 시설을 시스템에 등록합니다.
+* **Request Body:** `CreateFacilityDto`
+* **Responses:**
+  * `201 Created`: 시설이 성공적으로 추가되었습니다.
+
+### 5. 시설 정보 수정
+* **URL:** `/facility/:id`
+* **Method:** `PATCH`
+* **Summary:** 특정 시설의 정보를 부분적으로 수정합니다.
+* **Path Parameters:**
+  * `id` (number): 시설 고유 ID (`ParseIntPipe` 적용)
+* **Request Body:** `UpdateFacilityDto`
+* **Responses:**
+  * `200 OK`: 시설 정보 수정 성공
+  * `404 Not Found`: 해당 ID를 사용하는 시설이 없습니다.
+
+### 6. 시설 정보 삭제
+* **URL:** `/facility/:id`
+* **Method:** `DELETE`
+* **Summary:** 시스템에서 특정 시설 정보를 삭제합니다.
+* **Path Parameters:**
+  * `id` (number): 시설 고유 ID (`ParseIntPipe` 적용)
+* **Responses:**
+  * `200 OK`: 시설 삭제 성공
+  * `404 Not Found`: 해당 ID를 사용하는 시설이 없습니다.
